@@ -1,79 +1,79 @@
-#on:
-#  pull_request:
-#    branches:
-#      - main
-#      - master
-#  push:
-#    branches:
-#      - main
-#      - master
-#      - develop
-#name: "Build & Release"
-#jobs:
-#  build:
-#    name: Build & Release
-#    runs-on: macos-latest
-#    steps:
-#      - uses: actions/checkout@v1
-#      - uses: actions/setup-java@v1
-#        with:
-#          java-version: '12.x'
-#      - uses: subosito/flutter-action@v1
-#        with:
-#          flutter-version: '2.2.0'
-#      - run: flutter pub get
-#      - run: flutter test
-#      - run: flutter build apk --debug --split-per-abi
-#      - run: |
-#          flutter build ios --no-codesign
-#          cd build/ios/iphoneos
-#          mkdir Payload
-#          cd Payload
-#          ln -s ../Runner.app
-#          cd ..
-#          zip -r app.ipa Payload
-#      - name: Push to Releases
-#        uses: ncipollo/release-action@v1
-#        with:
-#          artifacts: "build/app/outputs/apk/debug/*,build/ios/iphoneos/app.ipa"
-#          tag: v1.0.${{ github.run_number }}
-#          token: ${{ secrets.TOKEN }}
-#
-#
-#
-#
-#
-#
-## push to master, main, develop
-## pull request on main master
-
 on:
+  pull_request:
+    branches:
+      - main
+      - master
   push:
     branches:
+      - main
       - master
-
-name: Build My Apps
-
+      - develop
+name: "Build & Release"
 jobs:
   build:
-    name: Build and Release new apk
-    runs-on: ubuntu-latest
+    name: Build & Release
+    runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-java@v2
+      - uses: actions/checkout@v1
+      - uses: actions/setup-java@v1
         with:
-          distribution: 'zulu'
-          java-version: '11'
-
-      - uses: subosito/flutter-action@v2
+          java-version: '12.x'
+      - uses: subosito/flutter-action@v1
         with:
-          channel: 'stable'
+          flutter-version: '3.13.5'
       - run: flutter pub get
-      - run: flutter build apk --release --split-per-abi
-
+      - run: flutter test
+      - run: flutter build apk --debug --split-per-abi
+      - run: |
+          flutter build ios --no-codesign
+          cd build/ios/iphoneos
+          mkdir Payload
+          cd Payload
+          ln -s ../Runner.app
+          cd ..
+          zip -r app.ipa Payload
       - name: Push to Releases
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "build/app/outputs/apk/release/*"
-          tag: v0.0.1
+          artifacts: "build/app/outputs/apk/debug/*,build/ios/iphoneos/app.ipa"
+          tag: v1.0.${{ github.run_number }}
           token: ${{ secrets.TOKEN }}
+
+
+
+
+
+
+# push to master, main, develop
+# pull request on main master
+
+#on:
+#  push:
+#    branches:
+#      - master
+#
+#name: Build My Apps
+#
+#jobs:
+#  build:
+#    name: Build and Release new apk
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v3
+#      - uses: actions/setup-java@v2
+#        with:
+#          distribution: 'zulu'
+#          java-version: '11'
+#
+#      - uses: subosito/flutter-action@v2
+#        with:
+#          channel: 'stable'
+#      - run: flutter pub get
+#      - run: flutter build apk --release --split-per-abi
+#
+#      - name: Push to Releases
+#        uses: ncipollo/release-action@v1
+#        with:
+#          artifacts: "build/app/outputs/apk/release/*"
+#          tag: v0.0.1
+#          token: ${{ secrets.TOKEN }}
